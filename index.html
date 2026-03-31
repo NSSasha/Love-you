@@ -1,1 +1,263 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>💖</title>
 
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: sans-serif;
+    background: #ffd6e7;
+}
+
+/* พื้นหลังเบลอ */
+.blur-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
+    z-index: 1;
+}
+
+/* 💕 หัวใจ (อยู่กลาง ระหว่างพื้นหลังกับกล่อง) */
+.heart {
+    position: fixed;
+    animation: floatDown 5s linear infinite;
+    pointer-events: none;
+    z-index: 2; /* อยู่หลังกล่อง */
+}
+
+/* 🤍 กล่องข้อความ (อยู่หน้าสุด) */
+.box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 50%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    z-index: 3; /* สูงสุด */
+}
+
+/* ปุ่ม */
+button {
+    margin-top: 15px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    background: #ff6f91;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* ❤️ อิโมจิหัวใจ */
+.heart {
+    position: absolute;
+    animation: floatDown 5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes floatDown {
+    0% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) scale(0.3);
+        opacity: 0;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="blur-bg"></div>
+
+<div id="content" class="box"></div>
+
+<script>
+
+/* 💖 สุ่มหัวใจ */
+function startHearts(){
+    let emojis = ["❤️","🩷","💘","💝","💖","💗","💓","💞","💕","♥️","❣️","❤️‍🔥"];
+    setInterval(()=>{
+        let h = document.createElement("div");
+        h.className = "heart";
+        h.innerHTML = emojis[Math.floor(Math.random()*emojis.length)];
+
+        h.style.left = Math.random()*100 + "vw";
+        h.style.fontSize = (Math.random()*30 + 20) + "px";
+
+        document.body.appendChild(h);
+
+        setTimeout(()=>h.remove(),5000);
+    },200);
+}
+
+startHearts();
+
+/* 📖 หน้า 1 */
+function page1(){
+    content.innerHTML = `
+    <h2>Hello! 👋🏻</h2>
+    <p>อย่างที่เธอรู้เค้าชื่อ ออย ปีนี้อายุ 17 ปี 😊</p>
+    <p>เค้าเกิดวันที่ 4 มกราคม 🥳</p>
+    <button onclick="page2()">ต่อไป! 👉🏻</button>
+    `;
+}
+
+/* 📖 หน้า 2 */
+function page2(){
+    content.innerHTML = `
+    <h2>เราก็รู้จักกันมาสักพักแล้ว<br>เค้ามีบางอย่างจะบอก... 😳</h2>
+    <button onclick="page3()">ต่อไป! 👉🏻</button>
+    `;
+}
+
+/* 📖 หน้า 3 */
+function page3(){
+    content.innerHTML = `
+    <h2>แต่ก่อนอื่นต้องเล่นเกมก่อนนะ! 😜<br>พร้อมไหม?</h2>
+
+    <div style="display:flex; justify-content:center; gap:20px; margin-top:20px;">
+        <button style="width:120px;" onclick="ready()">พร้อม</button>
+        <button id="noBtn" style="width:120px;" onmouseover="runNo()">ไม่พร้อม</button>
+    </div>
+    `;
+  }
+
+  let runCount = 0;
+
+function runNo(){
+    let btn = document.getElementById("noBtn");
+
+    if(runCount < 3){
+        runCount++;
+
+        let x = Math.random() * (window.innerWidth - 120);
+        let y = Math.random() * (window.innerHeight - 50);
+
+        btn.style.position = "absolute";
+        btn.style.left = x + "px";
+        btn.style.top = y + "px";
+
+    } else {
+        btn.innerText = "โอเคก็ได้ 😳";
+        btn.onmouseover = null;
+        btn.onclick = notReady;
+    }
+          }
+  
+function notReady(){
+    content.innerHTML = `<h2>ต้องพร้อมสิ 😜 ลองใหม่!</h2><button onclick="page3()">กลับไป</button>`;
+}
+  function ready(){
+    startGame();
+          }
+
+  /* 📖 หน้า 4 */
+  function startGame(){
+    score = 0;
+    gameRunning = true;
+
+    content.innerHTML = `
+    <h2>กดอิโมจิหัวใจ ❤️ ให้ครบ 10 ดวง</h2>
+
+    <div id="gameBox" style="
+        margin:20px auto;
+        width:200px;
+        height:200px;
+        background:white;
+        border-radius:20px;
+        position:relative;
+        overflow:hidden;
+    "></div>
+    `;
+
+    spawnHeart();
+  }
+
+  function spawnHeart(){
+    let box = document.getElementById("gameBox");
+
+    let h = document.createElement("div");
+    h.innerHTML = "♥️";
+    h.style.position = "absolute";
+    h.style.fontSize = "30px";
+    h.style.cursor = "pointer";
+
+    h.style.left = Math.random() * 160 + "px";
+    h.style.top = Math.random() * 160 + "px";
+
+    // เอฟเฟกต์เด้ง
+    h.style.transform = "scale(0)";
+    h.style.transition = "0.2s";
+    setTimeout(()=> h.style.transform = "scale(1)", 10);
+
+    // 🖱️ กดหัวใจ
+    h.onclick = ()=>{
+        h.remove();
+        score++;
+
+        if(score >= 10){
+            winGame();
+        }
+    };
+
+    box.appendChild(h);
+
+    // ⏳ ถ้าไม่กดภายใน 1.5 วิ → หาย
+    setTimeout(()=>{
+        if(h.parentElement){ // ยังอยู่ในจอ
+            h.remove();
+        }
+    }, 1500);
+    setTimeout(()=>{
+    h.style.transition = "0.5s";    h.style.opacity = "0";
+}, 1000); // เริ่มจางก่อนหาย
+
+    if(score < 10){
+        setTimeout(spawnHeart, 500);
+    }
+  }
+
+  /* 📖 หน้า 5 */
+  function winGame(){
+    gameRunning = false;
+
+    content.innerHTML = `
+    <h2>เก่งมากเลย 💖</h2>
+    <button onclick="pageAfterGame()">ต่อไป 👉🏻</button>
+    `;
+  }
+
+  /* 📖 หน้า 6 */
+  function pageAfterGame(){
+    content.innerHTML = `
+    <h2>งั้น... บอกเลยนะ 🫣</h2>
+    <button onclick="finalPage()">ต่อไป 👉🏻</button>
+    `;
+    }
+
+  /* 📖 หน้า 7 */
+  function finalPage(){
+    content.innerHTML = `
+    <h2>เป็นแฟนกันนะ😘💗</h2>
+    `;
+  }
+/* เริ่ม */
+page1();
+
+</script>
+
+</body>
+</html>
